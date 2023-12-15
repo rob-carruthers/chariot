@@ -13,7 +13,7 @@ class ChariotJourneyPipeline:
 
     def request_from_natural_language(self, natural_input):
         """
-        Reqeust a journey via TFL from a natural language input
+        Request a journey via TFL from a natural language input
         """
 
         journey_request_params = self.nlp.process_input(natural_input)
@@ -24,5 +24,6 @@ class ChariotJourneyPipeline:
             journey_request = JourneyRequest()
             journey = journey_request.get_best_journey(journey_from, journey_to)
             return journey
-        else:
-            return None
+
+        # Return None if no valid from or to points
+        return None
