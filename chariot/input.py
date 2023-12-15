@@ -9,7 +9,7 @@ class NaturalLanguageJourneyRequestTRF:
     def __init__(self):
         self.nlp = spacy.load('en_core_web_trf')
 
-    def process_input(self, natural_input):
+    def process_input(self, natural_input, debug_ents=False):
         """
         Pass a single natural language input through SpaCy.
 
@@ -33,5 +33,9 @@ class NaturalLanguageJourneyRequestTRF:
                         return f"Ambiguous input - multiple '{head}' points"
 
                     journey_request[head] = chunk.text.strip()
+
+        if debug_ents:
+            for ent in doc.ents:
+                print(ent, ent.label_)
 
         return journey_request
