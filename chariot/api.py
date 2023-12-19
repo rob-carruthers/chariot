@@ -33,4 +33,8 @@ async def chariot_request(query):
     Process a natural language TFL journey request.
     """
     result = app.state.pipeline.request_from_natural_language(query)
-    return result
+    return {"duration": result.duration,
+            "legs": result.legs,
+            "departure_stop": result.departure_stop,
+            "arrival_stop": result.arrival_stop
+    }
