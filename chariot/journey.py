@@ -67,13 +67,15 @@ class JourneyRequest:
                 common_name = option['place'].get('commonName', None)
                 naptan_id = option['place'].get('naptanId', None)
                 modes = option['place'].get('modes', None)
+                ics_code = option['place'].get('icsCode', None)
                 match_quality = option.get('matchQuality', None)
                 if modes:
                     for preferred_mode in self.preferred_modes:
                         if preferred_mode in modes:
                             stops_with_allowed_modes[naptan_id] = {'naptan_id': naptan_id,
                                                                    'common_name': common_name,
-                                                                   'match_quality': match_quality}
+                                                                   'match_quality': match_quality,
+                                                                   'ics_code': ics_code}
             top_matches = sorted(stops_with_allowed_modes.items(),
                                  key=lambda stop: stop[1]['match_quality'],
                                  reverse=True)
@@ -129,16 +131,22 @@ class JourneyRequest:
 
         # Get the most likely stop names, if a disambiguation was performed and a list was returned
         if stop_names['from']:
-            stop_from = stop_names['from'] \
-                if isinstance(stop_names['from'], str) \
-                else stop_names['from'][0][0]
+            if isinstance(stop_names['from'], str):
+                stop_from = stop_names['from']
+            elif stop_names['from'][0][1].get('ics_code', None):
+                stop_from = stop_names['from'][0][1]['ics_code']
+            else:
+                stop_from = stop_names['from'][0][0]
         else:
             raise KeyError("No 'from' stops found matching input criteria.")
 
         if stop_names['to']:
-            stop_to = stop_names['to'] \
-                if isinstance(stop_names['to'], str) \
-                else stop_names['to'][0][0]
+            if isinstance(stop_names['to'], str):
+                stop_to = stop_names['to']
+            elif stop_names['to'][0][1].get('ics_code', None):
+                stop_to = stop_names['to'][0][1]['ics_code']
+            else:
+                stop_to = stop_names['to'][0][0]
         else:
             raise KeyError("No 'to' stops found matching input criteria.")
 
